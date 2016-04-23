@@ -13,6 +13,8 @@
     "psr-4": {
       "ThingORM\\": "src/ThingORM/"
     }
+  },
+  "require": {
+    "phpunit/phpunit": "5.4.x-dev"
   }
-
 }

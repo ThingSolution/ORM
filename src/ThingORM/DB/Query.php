@@ -17,7 +17,7 @@ class Query
     const TYPE_UPDATE = "UPDATE";
     const TYPE_DELETE = "DELETE";
     const TYPE_INSERT = "INSERT";
-    const TYPE_COUNT  = "COUNT";
+    const TYPE_BATCH_INSERT = "BATCH_INSERT";
 
     protected $type;
     protected $selectType = PDO::FETCH_ASSOC;
@@ -40,12 +40,14 @@ class Query
     protected $whereNotBetween = array();
     protected $whereNull = array();
     protected $whereNotNull = array();
+    protected $havings = array();
 
     protected $leftJoins=array();
     protected $joins=array();
     protected $rightJoins=array();
+    protected $setValues = array();
 
-    protected $attributes = array();
+    protected $insertValues = array();
 
 
     public function __construct($type = null)
@@ -58,15 +60,22 @@ class Query
     }
     public static function insert()
     {
-        return Query::newInstance(self::TYPE_INSERT);
+        $query = new static(self::TYPE_INSERT);
+        return $query;
+    }
+    public static function batchInsert()
+    {
+        $query = new static(self::TYPE_BATCH_INSERT);
+        return $query;
     }
     public static function update()
     {
-        return Query::newInstance(self::TYPE_UPDATE);
+        $query = new static(self::TYPE_UPDATE);
+        return $query;
     }
     public static function select($selectColumns = null)
     {
-        $query = new static();
+        $query = new static(self::TYPE_SELECT);
         $query->selectColumns = $selectColumns;
         return $query;
     }
@@ -75,13 +84,10 @@ class Query
         $this->distinct = true;
         return $this;
     }
-    public static function count()
-    {
-        return new Query(self::TYPE_COUNT);
-    }
     public static function delete()
     {
-        return new Query(self::TYPE_DELETE);
+        $query = new static(self::TYPE_DELETE);
+        return $query;
     }
     public function table($table)
     {
@@ -96,13 +102,13 @@ class Query
     {
         return $this->table($table);
     }
-    public function values($attributes) {
-        $this->attributes = $attributes;
+    public function values($insertValues) {
+        $this->insertValues = $insertValues;
         return $this;
     }
-    public function set($attributes) {
+    public function set(array $attributes) {
 
-        $this->attributes = $attributes;
+        $this->setValues = $attributes;
         return $this;
     }
     public function orderBy($field,$order="asc")
@@ -156,6 +162,12 @@ class Query
     public function groupBy($groupBy)
     {
         $this->groupBy[] = $groupBy;
+        return $this;
+    }
+
+    public function having($field, $operator, $value)
+    {
+        $this->havings[] = array($field,$operator,$value);
         return $this;
     }
 

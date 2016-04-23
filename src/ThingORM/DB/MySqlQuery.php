@@ -13,18 +13,58 @@ class MySqlQuery extends Query
 {
     public function generateSQL()
     {
-        $sql ="";
+        $sql = "";
         $param = array();
-        if($this->type == self::TYPE_SELECT) {
-            $sql = $sql.$this->generateSelectQuery();
-            $sql = $sql.$this->generateJoinClause();
-            $sql = $sql.$this->generateWhereClause($param);
-            $sql = $sql.$this->generateGroupByQuery();
-            $sql = $sql.$this->generateOrderByQuery();
-            $sql = $sql.$this->generateLimitOffsetQuery($param);
+        if ($this->type == self::TYPE_SELECT) {
+            $sql = $sql . $this->generateSelectQuery();
+            $sql = $sql . $this->generateJoinClause();
+            $sql = $sql . $this->generateWhereClause($param);
+            $sql = $sql . $this->generateGroupByQuery();
+            $sql = $sql . $this->generateHavingClause($param);
+            $sql = $sql . $this->generateOrderByQuery();
+            $sql = $sql . $this->generateLimitOffsetQuery($param);
 
             var_dump($sql);
             var_dump($param);
+        } else if ($this->type == self::TYPE_UPDATE) {
+            $sql = "";
+            $param = array();
+            $sql = $sql . $this->generateUpdateQuery();
+            $sql = $sql . $this->generateJoinClause();
+            $sql = $sql . $this->generateSetQuery($param);
+            $sql = $sql . $this->generateWhereClause($param);
+
+            var_dump($sql);
+            var_dump($param);
+
+        } else if ($this->type == self::TYPE_DELETE) {
+            $sql = "";
+            $param = array();
+            $sql = $sql . $this->generateDeleteQuery();
+            $sql = $sql . $this->generateJoinClause();
+            $sql = $sql . $this->generateWhereClause($param);
+
+            var_dump($sql);
+            var_dump($param);
+
+        } else if ($this->type == self::TYPE_INSERT) {
+            $sql = "";
+            $param = array();
+            $sql = $sql . $this->generateInsertQuery();
+            $sql = $sql . $this->generateInsertValueQuery($param);
+
+            var_dump($sql);
+            var_dump($param);
+
+        } else if ($this->type == self::TYPE_BATCH_INSERT) {
+            $sql = "";
+            $param = array();
+            $sql = $sql . $this->generateInsertQuery();
+            $sql = $sql . $this->generateBatchInsertValueQuery($param);
+
+            var_dump($sql);
+            var_dump($param);
+
         }
     }
 
@@ -39,7 +79,7 @@ class MySqlQuery extends Query
         if(count($this->selectColumns)==0) {
             $sql = "select * ";
         } else {
-            $sql = "select `".implode("`,`",$this->selectColumns)."`";
+            $sql = "select ".implode(",",$this->selectColumns);
         }
 
         if($this->table =="") {
@@ -162,6 +202,30 @@ class MySqlQuery extends Query
         return $sql;
     }
 
+    private function generateHavingClause(&$param) {
+        $sql = "";
+        $sqlWhere = array();
+        if(count($this->havings)>0) {
+            $whereSqls = array();
+
+            foreach ($this->havings as $where) {
+                $whereSqls[] = " ".$where[0]." ".$where[1]." ? ";
+                if(is_array($where[2])) {
+                    $param[] = array_shift($where[2]);
+                } else {
+                    $param[] = $where[2];
+                }
+            }
+            $sqlWhere[] = implode(" and ",$whereSqls);
+        }
+
+        if(count($sqlWhere)>0) {
+            $sql = " having ".implode(" and ",$sqlWhere);
+
+        }
+        return $sql;
+    }
+
     /**
      * @return string
      */
@@ -207,12 +271,83 @@ class MySqlQuery extends Query
 
     }
 
+    /**
+     * @return string
+     */
     private function generateUpdateQuery() {
+        $sql = "update ".$this->table." ";
 
+        return $sql;
     }
+
+    /**
+     * @param $param
+     * @return string
+     */
+    private function generateSetQuery(&$param) {
+        $sql = "";
+        $sqlUpdate = array();
+
+        foreach ($this->setValues as $field => $setValue) {
+            $sqlUpdate[] = "`".$field."` = ? ";
+            $param[] = $setValue;
+        }
+
+        if(count($sqlUpdate)>0) {
+            $sql = " set ".implode(",",$sqlUpdate);
+        }
+
+        return $sql;
+    }
+
+    /**
+     * @return string
+     */
     private function generateDeleteQuery() {
-    }
-    private function generateSelectCountQuery() {
+        return "delete from ".$this->table." ";
     }
 
+    private function generateInsertQuery() {
+        return "insert into ".$this->table." ";
+    }
+
+    private function generateInsertValueQuery(&$param) {
+        $fields = array();
+        $values = array();
+        foreach ($this->insertValues as $field => $value) {
+            $fields[] = $field;
+            if(is_array($value)) {
+                $values[] = array_shift($value);
+            } else {
+                $values[] = "?";
+                $param[] = $value;
+            }
+        }
+        $sql = " (`".implode("`,`",$fields)."`) values (".implode(",",$values).")";
+
+        return $sql;
+    }
+    private function generateBatchInsertValueQuery(&$param) {
+        $fields = array();
+
+        $finalValues = array();
+        foreach ($this->insertValues as $row) {
+            if(is_array($row)) {
+                $values = array();
+                foreach ($row as $field => $value) {
+                    $fields[$field] = $field;
+                    if(is_array($value)) {
+                        $values[] = array_shift($value);
+                    } else {
+                        $values[] = "?";
+                        $param[] = $value;
+                    }
+                }
+                $finalValues[] = "(".implode(",",$values).")";
+            }
+        }
+        $sql = " (`".implode("`,`",array_values($fields))."`) values ".implode(",",$finalValues);
+
+        return $sql;
+    }
 }

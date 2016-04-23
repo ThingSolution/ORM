@@ -3,14 +3,15 @@
  * Created by PhpStorm.
  * User: michael
  * Date: 4/23/16
- * Time: 15:01
+ * Time: 17:52
  */
+
 define('__APP__', __DIR__ . '/..');
 require __APP__ . '/vendor/autoload.php';
 
 use ThingORM\DB\MySqlQuery;
 
-$query = MySqlQuery::select(['id','name','address'])
+$query = MySqlQuery::select(["count(user.*) as count"])
     ->from("user")
     ->rightJoin('user_info','user.id','=','user_info.user_id')
     ->where('id','>','3')
