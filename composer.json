@@ -9,9 +9,10 @@
       "email": "hungnv038@gmail.com"
     }
   ],
-  "require": {
-    "cinnamonlab/db": "dev-master",
-    "cinnamonlab/framework": "dev-master"
+  "autoload": {
+    "psr-4": {
+      "ThingORM\\": "src/ThingORM/"
+    }
   }
 
 }
