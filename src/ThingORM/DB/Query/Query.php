@@ -6,12 +6,13 @@
  * Time: 23:20
  */
 
-namespace ThingORM\DB;
+namespace ThingORM\DB\Query;
 
 
+use Framework\DB\DB;
 use PDO;
 
-class Query
+abstract class Query
 {
     const TYPE_SELECT = "SELECT";
     const TYPE_UPDATE = "UPDATE";
@@ -49,14 +50,19 @@ class Query
 
     protected $insertValues = array();
 
+    /**
+     * @var DB
+     */
+    protected $readDBInstance;
+    /**
+     * @var DB
+     */
+    protected $writeDBInstance;
+
 
     public function __construct($type = null)
     {
         $this->type = $type ? $type : self::TYPE_SELECT;
-    }
-    public static function newInstance($type = null)
-    {
-        return new Query($type);
     }
     public static function insert()
     {
@@ -183,7 +189,30 @@ class Query
         $this->rightJoins[] = array($table,$first,$operator,$second);
         return $this;
     }
-    public function generateSQL() {
 
+    public function execute() {
+        if($this->type==self::TYPE_SELECT) {
+            // use read db instance
+            if($this->readDBInstance!=null) {
+                //
+                $query = $this->generateSQL();
+                return $this->readDBInstance->select($query['sql'],$query['params']);
+            }
+        } else {
+            // use write db instance
+            if($this->writeDBInstance!=null) {
+                $query = $this->generateSQL();
+                if($this->type==self::TYPE_INSERT || $this->type == self::TYPE_BATCH_INSERT) {
+                    return $this->writeDBInstance->insert($query['sql'],$query['params']);
+                } elseif($this->type==self::TYPE_UPDATE) {
+                    return $this->writeDBInstance->update($query['sql'],$query['params']);
+                } else {
+                    return $this->writeDBInstance->delete($query['sql'],$query['params']);
+                }
+            }
+        }
     }
+
+    // interface functions
+    protected abstract function generateSQL();
 }

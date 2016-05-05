@@ -6,12 +6,16 @@
  * Time: 20:41
  */
 
-namespace ThingORM\DB;
+namespace ThingORM\DB\Query;
 
 
-class MySqlQuery extends Query
+abstract class MySqlQuery extends Query
 {
-    public function generateSQL()
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    protected function generateSQL()
     {
         $sql = "";
         $param = array();
@@ -24,8 +28,6 @@ class MySqlQuery extends Query
             $sql = $sql . $this->generateOrderByQuery();
             $sql = $sql . $this->generateLimitOffsetQuery($param);
 
-            var_dump($sql);
-            var_dump($param);
         } else if ($this->type == self::TYPE_UPDATE) {
             $sql = "";
             $param = array();
@@ -34,9 +36,6 @@ class MySqlQuery extends Query
             $sql = $sql . $this->generateSetQuery($param);
             $sql = $sql . $this->generateWhereClause($param);
 
-            var_dump($sql);
-            var_dump($param);
-
         } else if ($this->type == self::TYPE_DELETE) {
             $sql = "";
             $param = array();
@@ -44,28 +43,20 @@ class MySqlQuery extends Query
             $sql = $sql . $this->generateJoinClause();
             $sql = $sql . $this->generateWhereClause($param);
 
-            var_dump($sql);
-            var_dump($param);
-
         } else if ($this->type == self::TYPE_INSERT) {
             $sql = "";
             $param = array();
             $sql = $sql . $this->generateInsertQuery();
             $sql = $sql . $this->generateInsertValueQuery($param);
 
-            var_dump($sql);
-            var_dump($param);
-
         } else if ($this->type == self::TYPE_BATCH_INSERT) {
             $sql = "";
             $param = array();
             $sql = $sql . $this->generateInsertQuery();
             $sql = $sql . $this->generateBatchInsertValueQuery($param);
-
-            var_dump($sql);
-            var_dump($param);
-
         }
+
+        return array('sql'=>$sql,'params'=>$param);
     }
 
     /**
@@ -74,7 +65,6 @@ class MySqlQuery extends Query
      */
     private function generateSelectQuery() {
         $sql="";
-        $params=array();
 
         if(count($this->selectColumns)==0) {
             $sql = "select * ";
