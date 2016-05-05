@@ -30,7 +30,7 @@ class BaseRepository
         $this->tableName = $table_name;
         $this->entityName = $entityName;
 
-        $this->entityClass = Config::get("entity_namespace","App\\Models\\Entity").$entityName;
+        $this->entityClass = Config::get("app.entity_namespace","App\\Models\\Entity").$entityName;
     }
 
     public function getOneObjectByField($field=array()) {
