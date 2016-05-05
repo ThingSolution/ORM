@@ -6,7 +6,7 @@
  * Time: 16:40
  */
 return array(
-    "entity_namespace"=>"",
+    "entity_namespace"=>"App\\Entity\\",
     "controller_namespace"=>"",
 
 );

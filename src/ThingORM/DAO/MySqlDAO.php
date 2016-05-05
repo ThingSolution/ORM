@@ -20,8 +20,8 @@ class MySqlDAO extends MySqlQuery
     {
         parent::__construct($type);
         //$this->db = new DB(Config::get('database.default'));
-        $this->readDBInstance = DB::connection(Config::get('database.mysql_read'));
-        $this->writeDBInstance = DB::connection(Config::get('database.mysql_write'));
+        $this->readDBInstance = DB::connection('mysql_read');
+        $this->writeDBInstance = DB::connection('mysql_write');
         $this->readDBInstance->setFetchMode(PDO::FETCH_OBJ);
         $this->writeDBInstance->setFetchMode(PDO::FETCH_OBJ);
     }

@@ -11,7 +11,8 @@
   ],
   "autoload": {
     "psr-4": {
-      "ThingORM\\": "src/ThingORM/"
+      "ThingORM\\": "src/ThingORM/",
+      "App\\":"example/app/"
     }
   },
   "require": {

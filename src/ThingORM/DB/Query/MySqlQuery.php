@@ -9,7 +9,7 @@
 namespace ThingORM\DB\Query;
 
 
-abstract class MySqlQuery extends Query
+class MySqlQuery extends Query
 {
     /**
      * @return array

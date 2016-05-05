@@ -9,7 +9,7 @@
 define('__APP__', __DIR__ . '/..');
 require __APP__ . '/vendor/autoload.php';
 
-use ThingORM\DB\MySqlQuery;
+use ThingORM\DB\Query\MySqlQuery;
 
 $query = MySqlQuery::batchInsert()->into('user')
     ->values([

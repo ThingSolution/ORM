@@ -8,7 +8,7 @@
 define('__APP__', __DIR__ . '/..');
 require __APP__ . '/vendor/autoload.php';
 
-use ThingORM\DB\MySqlQuery;
+use ThingORM\DB\Query\MySqlQuery;
 
 $query = MySqlQuery::select(['id','name','address'])
     ->from("user")
@@ -27,6 +27,3 @@ $query = MySqlQuery::select(['id','name','address'])
     ->orderBy('id','desc')
     ->limit(10)
     ->offset(20);
-
-
-$query->generateSQL();
