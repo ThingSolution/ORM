@@ -12,6 +12,6 @@ require __APP__ . '/vendor/autoload.php';
 
 $userRepository = New \App\Repository\UserRepository();
 
-$result = $userRepository->getObjectsByField([]);
+$result = $userRepository->rawQuery();
 
 var_dump($result);

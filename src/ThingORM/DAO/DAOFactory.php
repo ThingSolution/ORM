@@ -89,4 +89,49 @@ class DAOFactory
             return MongoQuery::delete();
         }
     }
+
+    /**
+     * @return Query
+     * @throws \Framework\Exception\FrameworkException
+     * @throws null
+     */
+    public static function rawSelect($sql,$param=array()) {
+        if(Config::get("database.db_type","MYSQL")=="MYSQL") {
+            return MySqlDAO::rawSelect($sql,$param);
+        } elseif(Config::get("database.db_type","MYSQL")=="MSSQL") {
+            return MsSqlDAO::rawSelect($sql,$param);
+        } else {
+            return MongoQuery::rawSelect($sql,$param);
+        }
+    }
+
+    /**
+     * @return Query
+     * @throws \Framework\Exception\FrameworkException
+     * @throws null
+     */
+    public static function rawUpdate($sql,$param=array()) {
+        if(Config::get("database.db_type","MYSQL")=="MYSQL") {
+            return MySqlDAO::rawQuery($sql,$param);
+        } elseif(Config::get("database.db_type","MYSQL")=="MSSQL") {
+            return MsSqlDAO::rawQuery($sql,$param);
+        } else {
+            return MongoQuery::rawQuery($sql,$param);
+        }
+    }
+
+    /**
+     * @return Query
+     * @throws \Framework\Exception\FrameworkException
+     * @throws null
+     */
+    public static function rawDelete($sql,$param=array()) {
+        if(Config::get("database.db_type","MYSQL")=="MYSQL") {
+            return MySqlDAO::rawQuery($sql,$param);
+        } elseif(Config::get("database.db_type","MYSQL")=="MSSQL") {
+            return MsSqlDAO::rawQuery($sql,$param);
+        } else {
+            return MongoQuery::rawQuery($sql,$param);
+        }
+    }
 }

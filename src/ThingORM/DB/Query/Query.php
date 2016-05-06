@@ -19,6 +19,8 @@ abstract class Query
     const TYPE_DELETE = "DELETE";
     const TYPE_INSERT = "INSERT";
     const TYPE_BATCH_INSERT = "BATCH_INSERT";
+    const TYPE_RAW_SELECT = "RAW_SELECT";
+    const TYPE_RAW_QUERY = "RAW_QUERY";
 
     protected $type;
     protected $selectType = PDO::FETCH_ASSOC;
@@ -49,6 +51,9 @@ abstract class Query
     protected $setValues = array();
 
     protected $insertValues = array();
+
+    protected $rawSql;
+    protected $rawParams=array();
 
     /**
      * @var DB
@@ -85,6 +90,20 @@ abstract class Query
         $query->selectColumns = $selectColumns;
         return $query;
     }
+
+    public static function rawSelect($sql,$param=array()) {
+        $query = new static(self::TYPE_RAW_SELECT);
+        $query->rawSql=$sql;
+        $query->rawParams=$param;
+        return $query;
+    }
+    public static function rawQuery($sql,$param=array()) {
+        $query = new static(self::TYPE_RAW_QUERY);
+        $query->rawSql=$sql;
+        $query->rawParams=$param;
+        return $query;
+    }
+
     public function distinct()
     {
         $this->distinct = true;
@@ -191,7 +210,7 @@ abstract class Query
     }
 
     public function execute() {
-        if($this->type==self::TYPE_SELECT) {
+        if($this->type==self::TYPE_SELECT || $this->type == self::TYPE_RAW_SELECT) {
             // use read db instance
             if($this->readDBInstance!=null) {
                 //
@@ -206,8 +225,11 @@ abstract class Query
                     return $this->writeDBInstance->insert($query['sql'],$query['params']);
                 } elseif($this->type==self::TYPE_UPDATE) {
                     return $this->writeDBInstance->update($query['sql'],$query['params']);
-                } else {
+                } elseif($this->type==self::TYPE_DELETE) {
                     return $this->writeDBInstance->delete($query['sql'],$query['params']);
+                } else{
+                    // raw query
+                    return $this->writeDBInstance->query($query['sql'],$query['params']);
                 }
             }
         }

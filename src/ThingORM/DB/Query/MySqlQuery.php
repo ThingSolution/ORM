@@ -54,6 +54,10 @@ class MySqlQuery extends Query
             $param = array();
             $sql = $sql . $this->generateInsertQuery();
             $sql = $sql . $this->generateBatchInsertValueQuery($param);
+        } else if($this->type == self::TYPE_RAW_SELECT || $this->type==self::TYPE_RAW_QUERY){
+            // raw query
+            $sql = $this->rawSql;
+            $param = $this->rawParams;
         }
 
         return array('sql'=>$sql,'params'=>$param);
