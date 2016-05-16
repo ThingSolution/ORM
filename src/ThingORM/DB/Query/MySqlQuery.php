@@ -283,8 +283,12 @@ class MySqlQuery extends Query
         $sqlUpdate = array();
 
         foreach ($this->setValues as $field => $setValue) {
-            $sqlUpdate[] = "`".$field."` = ? ";
-            $param[] = $setValue;
+            if(is_array($setValue)) {
+                $sqlUpdate[] = "`".$field."` = ".array_shift($value);
+            } else {
+                $sqlUpdate[] = "`".$field."` = ? ";
+                $param[] = $setValue;
+            }
         }
 
         if(count($sqlUpdate)>0) {
