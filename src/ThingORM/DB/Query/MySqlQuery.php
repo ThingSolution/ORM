@@ -284,7 +284,7 @@ class MySqlQuery extends Query
 
         foreach ($this->setValues as $field => $setValue) {
             if(is_array($setValue)) {
-                $sqlUpdate[] = "`".$field."` = ".array_shift($value);
+                $sqlUpdate[] = "`".$field."` = ".array_shift($setValue);
             } else {
                 $sqlUpdate[] = "`".$field."` = ? ";
                 $param[] = $setValue;

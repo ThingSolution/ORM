@@ -12,6 +12,6 @@ require __APP__ . '/vendor/autoload.php';
 
 $userRepository = New \App\Repository\UserRepository();
 
-$result = $userRepository->rawQuery();
+$result = $userRepository->updateUser();
 
 var_dump($result);

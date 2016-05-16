@@ -28,7 +28,7 @@ class UserRepository extends BaseRepository
         return DAOFactory::insert()->into("user")->values(['name'=>'new name','address'=>'new add'])->execute();
     }
     public function updateUser() {
-        return DAOFactory::update()->table("user")->set(['name'=>"sdasdasda"])->where("id","=",4)->execute();
+        return DAOFactory::update()->table("user")->set(['created_at'=>array('now()')])->where("id","=",4)->execute();
     }
     public function rawQuery() {
         return DAOFactory::rawSelect("select * from user",[])->execute();
