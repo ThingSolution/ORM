@@ -74,6 +74,29 @@ class BaseRepository
     }
 
     /**
+     * @param array $fields
+     * @return array
+     */
+    public function getObjectsInField($fields = array())
+    {
+        $query = DAOFactory::select()->from($this->tableName);
+
+        foreach ($fields as $key => $value) {
+            if(!is_array($value)) $value=array($value);
+            $query=$query->whereIn($key,$value);
+        }
+
+        $result = $query->execute();
+
+        $response = array();
+
+        foreach ($result as $item) {
+            $response[] = new $this->entityClass($item);
+        }
+        return $response;
+    }
+
+    /**
      * @param array $set_Params
      * @param array $where
      * @return array
