@@ -29,6 +29,12 @@ class UserRepository extends BaseRepository
     }
     public function updateUser() {
         return DAOFactory::update()->table("user")->set(['created_at'=>array('now()')])->where("id","=",4)->execute();
+        DAOFactory::select()
+            ->from("user")
+            ->where('id','!=',1)
+            ->where('email','=','vanhung@gmail.com')
+            ->execute()
+        ;
     }
     public function rawQuery() {
         return DAOFactory::rawSelect("select * from user",[])->execute();

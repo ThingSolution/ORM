@@ -128,7 +128,7 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->where as $where) {
-                $whereSqls[] = " `".$where[0]."` ".$where[1]." ? ";
+                $whereSqls[] = $where[0]." ".$where[1]." ? ";
                 if(is_array($where[2])) {
                     $param[] = array_shift($where[2]);
                 } else {
@@ -141,7 +141,7 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->whereNotNull as $where) {
-                    $whereSqls[] = " `".$where."` is not null ";
+                    $whereSqls[] = $where." is not null ";
             }
             $sqlWhere[] = implode(" and ",$whereSqls);
         }
@@ -149,7 +149,7 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->whereNull as $where) {
-                $whereSqls[] = " `".$where."` is null ";
+                $whereSqls[] = $where." is null ";
             }
             $sqlWhere[] = implode(" and ",$whereSqls);
         }
@@ -157,7 +157,7 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->whereNotBetween as $where) {
-                $whereSqls[] = " `".$where[0]."` not between ? and ? ";
+                $whereSqls[] = $where[0]." not between ? and ? ";
                 $param[] = $where[1];
                 $param[] = $where[2];
             }
@@ -167,7 +167,7 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->whereBetween as $where) {
-                $whereSqls[] = " `".$where[0]."` between ? and ? ";
+                $whereSqls[] = $where[0]." between ? and ? ";
                 $param[] = $where[1];
                 $param[] = $where[2];
             }
@@ -177,7 +177,7 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->whereIn as $where) {
-                $whereSqls[] = " `".$where[0]."` in ('".implode("','",$where[1])."') ";
+                $whereSqls[] = $where[0]." in ('".implode("','",$where[1])."') ";
             }
             $sqlWhere[] = implode(" and ",$whereSqls);
         }
@@ -185,7 +185,7 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->whereIn as $where) {
-                $whereSqls[] = " `".$where[0]."` not in ('".implode("','",$where[1])."') ";
+                $whereSqls[] = $where[0]." not in ('".implode("','",$where[1])."') ";
             }
             $sqlWhere[] = implode(" and ",$whereSqls);
         }
@@ -229,7 +229,7 @@ class MySqlQuery extends Query
             $part[] = $item;
         }
         if(count($part)>0) {
-            return " group by `".implode("`,`",$part)."`";
+            return " group by ".implode(",",$part);
         } else {
             return "";
         }
@@ -237,7 +237,7 @@ class MySqlQuery extends Query
     private function generateOrderByQuery() {
         $part =array();
         foreach ($this->orderBy as $item) {
-            $part[] = "`".$item[0]."` ".$item[1];
+            $part[] = $item[0]." ".$item[1];
         }
         if(count($part)>0) {
             return " order by ".implode(",",$part);
@@ -284,9 +284,9 @@ class MySqlQuery extends Query
 
         foreach ($this->setValues as $field => $setValue) {
             if(is_array($setValue)) {
-                $sqlUpdate[] = "`".$field."` = ".array_shift($setValue);
+                $sqlUpdate[] = $field." = ".array_shift($setValue);
             } else {
-                $sqlUpdate[] = "`".$field."` = ? ";
+                $sqlUpdate[] = $field." = ? ";
                 $param[] = $setValue;
             }
         }

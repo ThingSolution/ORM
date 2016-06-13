@@ -55,12 +55,17 @@ class BaseRepository
      * @param array $fields
      * @return array
      */
-    public function getObjectsByField($fields = array())
+    public function getObjectsByField($fields = array(),$limit=0,$offset=0)
     {
         $query = DAOFactory::select()->from($this->tableName);
 
         foreach ($fields as $key => $value) {
             $query=$query->where($key,"=",$value);
+        }
+
+        if($limit>0) {
+            $query=$query->limit($limit)
+                ->offset($offset);
         }
 
         $result = $query->execute();
