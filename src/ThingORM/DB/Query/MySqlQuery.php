@@ -184,7 +184,7 @@ class MySqlQuery extends Query
         if(count($this->whereNotIn)>0) {
             $whereSqls = array();
 
-            foreach ($this->whereIn as $where) {
+            foreach ($this->whereNotIn as $where) {
                 $whereSqls[] = $where[0]." not in ('".implode("','",$where[1])."') ";
             }
             $sqlWhere[] = implode(" and ",$whereSqls);
