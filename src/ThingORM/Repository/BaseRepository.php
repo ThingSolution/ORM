@@ -148,7 +148,7 @@ class BaseRepository
                 throw new DBException("Table name invalid", DBException::ERROR_CODE_INTERNAL);
             }
         } catch (DBException $e) {
-            throw new DBException($e->getTraceAsString(), DBException::ERROR_CODE_LACK_PARAMETER);
+            throw new DBException($e->getMessage(), DBException::ERROR_CODE_LACK_PARAMETER);
         }
     }
 
