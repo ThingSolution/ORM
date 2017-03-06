@@ -235,6 +235,23 @@ abstract class Query
         }
     }
 
+    public function beginTransaction() {
+        if($this->writeDBInstance != null) {
+            $this->writeDBInstance->getPdo()->beginTransaction();
+        }
+    }
+    public function commitTransaction() {
+        if($this->writeDBInstance != null) {
+            $this->writeDBInstance->getPdo()->commit();
+        }
+    }
+    public function rollbackTransaction() {
+        if($this->writeDBInstance != null) {
+            $this->writeDBInstance->getPdo()->rollBack();
+        }
+    }
+
+
     // interface functions
     protected abstract function generateSQL();
 }
