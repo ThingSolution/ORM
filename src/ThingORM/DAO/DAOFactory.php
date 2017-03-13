@@ -134,4 +134,32 @@ class DAOFactory
             return MongoQuery::rawQuery($sql,$param);
         }
     }
+
+    public static function beginTransaction() {
+        if(Config::get("database.db_type","MYSQL")=="MYSQL") {
+            MySqlDAO::beginTransaction();
+        } elseif(Config::get("database.db_type","MYSQL")=="MSSQL") {
+            MsSqlDAO::beginTransaction();
+        } else {
+            MongoQuery::beginTransaction();
+        }
+    }
+    public static function commitTransaction() {
+        if(Config::get("database.db_type","MYSQL")=="MYSQL") {
+            MySqlDAO::commitTransaction();
+        } elseif(Config::get("database.db_type","MYSQL")=="MSSQL") {
+            MsSqlDAO::commitTransaction();
+        } else {
+            MongoQuery::commitTransaction();
+        }
+    }
+    public static function rollbackTransaction() {
+        if(Config::get("database.db_type","MYSQL")=="MYSQL") {
+            MySqlDAO::rollbackTransaction();
+        } elseif(Config::get("database.db_type","MYSQL")=="MSSQL") {
+            MsSqlDAO::rollbackTransaction();
+        } else {
+            MongoQuery::rollbackTransaction();
+        }
+    }
 }

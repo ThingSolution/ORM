@@ -21,6 +21,7 @@ abstract class Query
     const TYPE_BATCH_INSERT = "BATCH_INSERT";
     const TYPE_RAW_SELECT = "RAW_SELECT";
     const TYPE_RAW_QUERY = "RAW_QUERY";
+    const TYPE_TRANSACTION = "TRANSACTION";
 
     protected $type;
     protected $selectType = PDO::FETCH_ASSOC;
@@ -235,23 +236,26 @@ abstract class Query
         }
     }
 
-    public function beginTransaction() {
-        if($this->writeDBInstance != null) {
-            $this->writeDBInstance->getPdo()->beginTransaction();
-        }
+    public static function beginTransaction() {
+        $query = new static(self::TYPE_TRANSACTION);
+        $query->beginTransaction();
     }
-    public function commitTransaction() {
-        if($this->writeDBInstance != null) {
-            $this->writeDBInstance->getPdo()->commit();
-        }
+    public static function commitTransaction() {
+        $query = new static(self::TYPE_TRANSACTION);
+        $query->commitTransaction();
     }
-    public function rollbackTransaction() {
-        if($this->writeDBInstance != null) {
-            $this->writeDBInstance->getPdo()->rollBack();
-        }
+    public static function rollbackTransaction() {
+        $query = new static(self::TYPE_TRANSACTION);
+        $query->rollbackTransaction();
     }
 
 
     // interface functions
     protected abstract function generateSQL();
+
+    protected abstract function startTransaction();
+
+    protected abstract function commit();
+
+    protected abstract function rollBack();
 }

@@ -348,4 +348,25 @@ class MySqlQuery extends Query
 
         return $sql;
     }
+
+    protected function startTransaction()
+    {
+        if($this->writeDBInstance != null) {
+            $this->writeDBInstance->getPdo()->beginTransaction();
+        }
+    }
+
+    protected function commit()
+    {
+        if($this->writeDBInstance != null) {
+            $this->writeDBInstance->getPdo()->commit();
+        }
+    }
+
+    protected function rollBack()
+    {
+        if($this->writeDBInstance != null) {
+            $this->writeDBInstance->getPdo()->rollBack();
+        }
+    }
 }

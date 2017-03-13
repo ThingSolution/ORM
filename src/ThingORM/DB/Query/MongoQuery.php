@@ -16,4 +16,19 @@ class MongoQuery extends Query
     {
         return array("sql"=>"","params"=>array());
     }
+
+    protected function startTransaction()
+    {
+        // TODO: Implement startTransaction() method.
+    }
+
+    protected function commit()
+    {
+        // TODO: Implement commit() method.
+    }
+
+    protected function rollBack()
+    {
+        // TODO: Implement rollBack() method.
+    }
 }
