@@ -238,15 +238,15 @@ abstract class Query
 
     public static function beginTransaction() {
         $query = new static(self::TYPE_TRANSACTION);
-        $query->beginTransaction();
+        $query->startTransaction();
     }
     public static function commitTransaction() {
         $query = new static(self::TYPE_TRANSACTION);
-        $query->commitTransaction();
+        $query->commit();
     }
     public static function rollbackTransaction() {
         $query = new static(self::TYPE_TRANSACTION);
-        $query->rollbackTransaction();
+        $query->rollBack();
     }
 
 
