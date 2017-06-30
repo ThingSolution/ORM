@@ -128,10 +128,11 @@ class MySqlQuery extends Query
             $whereSqls = array();
 
             foreach ($this->where as $where) {
-                $whereSqls[] = $where[0]." ".$where[1]." ? ";
+
                 if(is_array($where[2])) {
-                    $param[] = array_shift($where[2]);
+                    $whereSqls[] = $where[0]." ".$where[1].array_shift($where[2]) ;
                 } else {
+                    $whereSqls[] = $where[0]." ".$where[1]." ? ";
                     $param[] = $where[2];
                 }
             }
